@@ -82,6 +82,59 @@ const Dashboard = () => {
     return `${month}/${day}`;
   };
 
+  // Benchmarking data (industry standards)
+  const benchmarks = {
+    bounceRate: {
+      percentile25: 26.0,
+      median: 41.0,
+      percentile75: 55.0,
+      inverse: true, // Lower is better
+    },
+    avgSessionDuration: {
+      percentile25: 45,
+      median: 90,
+      percentile75: 180,
+      inverse: false, // Higher is better
+    },
+    // Sessions per user benchmark
+    sessionsPerUser: {
+      percentile25: 1.2,
+      median: 1.5,
+      percentile75: 2.1,
+      inverse: false,
+    },
+    // Pages per session benchmark
+    pagesPerSession: {
+      percentile25: 2.0,
+      median: 3.0,
+      percentile75: 4.5,
+      inverse: false,
+    },
+  };
+
+  const getPerformanceColor = (value, benchmark) => {
+    if (!value || !benchmark) return "#ffffff";
+
+    const { percentile25, median, percentile75, inverse } = benchmark;
+
+    if (inverse) {
+      // For metrics where lower is better (e.g., bounce rate)
+      if (value <= percentile25) return "#dcfce7"; // Green
+      if (value <= median) return "#fef9c3"; // Yellow
+      return "#fee2e2"; // Red
+    } else {
+      // For metrics where higher is better
+      if (value >= percentile75) return "#dcfce7"; // Green
+      if (value >= median) return "#fef9c3"; // Yellow
+      return "#fee2e2"; // Red
+    }
+  };
+
+  const formatBenchmark = (value, isTime = false) => {
+    if (isTime) return formatDuration(value);
+    return typeof value === "number" ? value.toFixed(1) + "%" : value;
+  };
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -153,7 +206,13 @@ const Dashboard = () => {
 
         <div className="stat-card">
           <div className="stat-icon" style={{ backgroundColor: "#e5e7eb" }}>
-            <PiKeyReturnFill style={{ color: "#374151", fontSize: "1.5rem", transform: "scaleY(-1)" }} />
+            <PiKeyReturnFill
+              style={{
+                color: "#374151",
+                fontSize: "1.5rem",
+                transform: "scaleY(-1)",
+              }}
+            />
           </div>
           <div className="stat-content">
             <h3>Sessions</h3>
@@ -163,7 +222,9 @@ const Dashboard = () => {
 
         <div className="stat-card">
           <div className="stat-icon" style={{ backgroundColor: "#e5e7eb" }}>
-            <MdOutlineFindInPage style={{ color: "#374151", fontSize: "1.5rem" }} />
+            <MdOutlineFindInPage
+              style={{ color: "#374151", fontSize: "1.5rem" }}
+            />
           </div>
           <div className="stat-content">
             <h3>Page Views</h3>
@@ -171,7 +232,15 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="stat-card">
+        <div
+          className="stat-card"
+          style={{
+            backgroundColor: getPerformanceColor(
+              analytics?.avgSessionDuration,
+              benchmarks.avgSessionDuration
+            ),
+          }}
+        >
           <div className="stat-icon" style={{ backgroundColor: "#e5e7eb" }}>
             <LuAlarmClock style={{ color: "#374151", fontSize: "1.5rem" }} />
           </div>
@@ -180,22 +249,72 @@ const Dashboard = () => {
             <p className="stat-number">
               {formatDuration(analytics?.avgSessionDuration)}
             </p>
+            <div className="benchmark-data">
+              <div className="benchmark-item">
+                <span className="benchmark-label">75th:</span>
+                <span className="benchmark-value">
+                  {formatDuration(benchmarks.avgSessionDuration.percentile75)}
+                </span>
+              </div>
+              <div className="benchmark-item">
+                <span className="benchmark-label">Median:</span>
+                <span className="benchmark-value">
+                  {formatDuration(benchmarks.avgSessionDuration.median)}
+                </span>
+              </div>
+              <div className="benchmark-item">
+                <span className="benchmark-label">25th:</span>
+                <span className="benchmark-value">
+                  {formatDuration(benchmarks.avgSessionDuration.percentile25)}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="stat-card">
+        <div
+          className="stat-card"
+          style={{
+            backgroundColor: getPerformanceColor(
+              analytics?.bounceRate,
+              benchmarks.bounceRate
+            ),
+          }}
+        >
           <div className="stat-icon" style={{ backgroundColor: "#e5e7eb" }}>
             <IoMdExit style={{ color: "#374151", fontSize: "1.5rem" }} />
           </div>
           <div className="stat-content">
             <h3>Bounce Rate</h3>
             <p className="stat-number">{analytics?.bounceRate?.toFixed(1)}%</p>
+            <div className="benchmark-data">
+              <div className="benchmark-item">
+                <span className="benchmark-label">75th:</span>
+                <span className="benchmark-value">
+                  {benchmarks.bounceRate.percentile75.toFixed(1)}%
+                </span>
+              </div>
+              <div className="benchmark-item">
+                <span className="benchmark-label">Median:</span>
+                <span className="benchmark-value">
+                  {benchmarks.bounceRate.median.toFixed(1)}%
+                </span>
+              </div>
+              <div className="benchmark-item">
+                <span className="benchmark-label">25th:</span>
+                <span className="benchmark-value">
+                  {benchmarks.bounceRate.percentile25.toFixed(1)}%
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="stat-card">
           <div className="stat-icon" style={{ backgroundColor: "#e5e7eb" }}>
-            <AiFillDollarCircle style={{ color: "#374151", fontSize: "1.5rem" }} />
+            <AiFillDollarCircle
+              style={{ color: "#374151", fontSize: "1.5rem" }}
+            />
           </div>
           <div className="stat-content">
             <h3>Conversions</h3>
