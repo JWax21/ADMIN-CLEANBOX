@@ -191,11 +191,14 @@ const Dashboard = () => {
       </div>
 
       {/* Overview Metrics */}
-      <div className="stats-grid">
+      <div className="stats-container">
+        <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-card-header">
             <div className="stat-icon" style={{ backgroundColor: "#e5e7eb" }}>
-              <VscGraphLine style={{ color: "#374151", fontSize: "1.125rem" }} />
+              <VscGraphLine
+                style={{ color: "#374151", fontSize: "1.125rem" }}
+              />
             </div>
             <h3>Traffic</h3>
           </div>
@@ -275,6 +278,19 @@ const Dashboard = () => {
             <p className="stat-number">
               {formatNumber(analytics?.conversions)}
             </p>
+            <div className="sub-metrics">
+              <div className="sub-metric-item">
+                <span className="sub-metric-label">Checkout:</span>
+                <span className="sub-metric-value">
+                  {(() => {
+                    const checkoutPage = topPages.find((page) =>
+                      page.path.includes("/checkout")
+                    );
+                    return formatNumber(checkoutPage?.views || 0);
+                  })()}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -289,7 +305,9 @@ const Dashboard = () => {
         >
           <div className="stat-card-header">
             <div className="stat-icon" style={{ backgroundColor: "#e5e7eb" }}>
-              <LuAlarmClock style={{ color: "#374151", fontSize: "1.125rem" }} />
+              <LuAlarmClock
+                style={{ color: "#374151", fontSize: "1.125rem" }}
+              />
             </div>
             <h3>Avg. Duration</h3>
           </div>
@@ -358,6 +376,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
 
