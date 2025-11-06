@@ -197,7 +197,7 @@ const Dashboard = () => {
             <VscGraphLine style={{ color: "#374151", fontSize: "1.25rem" }} />
           </div>
           <div className="stat-content">
-            <h3>Active Users</h3>
+            <h3>Traffic</h3>
             <p className="stat-number">
               {formatNumber(analytics?.activeUsers)}
             </p>
@@ -210,7 +210,7 @@ const Dashboard = () => {
               style={{
                 color: "#374151",
                 fontSize: "1.25rem",
-                transform: "scaleY(-1)",
+                transform: "scaleX(-1)",
               }}
             />
           </div>
