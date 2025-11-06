@@ -193,35 +193,35 @@ const Dashboard = () => {
       {/* Overview Metrics */}
       <div className="stats-container">
         <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-card-header">
-            <div className="stat-icon" style={{ backgroundColor: "#e5e7eb" }}>
-              <VscGraphLine
-                style={{ color: "#374151", fontSize: "1.125rem" }}
-              />
-            </div>
-            <h3>Traffic</h3>
-          </div>
-          <div className="stat-content">
-            <p className="stat-number">
-              {formatNumber(analytics?.activeUsers)}
-            </p>
-            <div className="sub-metrics">
-              <div className="sub-metric-item">
-                <span className="sub-metric-label">Sessions:</span>
-                <span className="sub-metric-value">
-                  {formatNumber(analytics?.sessions)}
-                </span>
+          <div className="stat-card">
+            <div className="stat-card-header">
+              <div className="stat-icon" style={{ backgroundColor: "#e5e7eb" }}>
+                <VscGraphLine
+                  style={{ color: "#374151", fontSize: "1.125rem" }}
+                />
               </div>
-              <div className="sub-metric-item">
-                <span className="sub-metric-label">Page Views:</span>
-                <span className="sub-metric-value">
-                  {formatNumber(analytics?.pageViews)}
-                </span>
+              <h3>Traffic</h3>
+            </div>
+            <div className="stat-content">
+              <p className="stat-number">
+                {formatNumber(analytics?.activeUsers)}
+              </p>
+              <div className="sub-metrics">
+                <div className="sub-metric-item">
+                  <span className="sub-metric-label">Sessions:</span>
+                  <span className="sub-metric-value">
+                    {formatNumber(analytics?.sessions)}
+                  </span>
+                </div>
+                <div className="sub-metric-item">
+                  <span className="sub-metric-label">Page Views:</span>
+                  <span className="sub-metric-value">
+                    {formatNumber(analytics?.pageViews)}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
         <div className="stat-card">
           <div className="stat-card-header">
@@ -242,22 +242,22 @@ const Dashboard = () => {
                 const buildMyBoxPage = topPages.find((page) =>
                   page.path.includes("/build-my-box")
                 );
-                const buildMyBoxVisitors = buildMyBoxPage?.views || 0;
-                const conversionRate = analytics?.activeUsers
-                  ? (buildMyBoxVisitors / analytics.activeUsers) * 100
-                  : 0;
-                return conversionRate.toFixed(1) + "%";
+                return formatNumber(buildMyBoxPage?.views || 0);
               })()}
             </p>
             <div className="sub-metrics">
               <div className="sub-metric-item">
-                <span className="sub-metric-label">Visitors:</span>
+                <span className="sub-metric-label">Percentage:</span>
                 <span className="sub-metric-value">
                   {(() => {
                     const buildMyBoxPage = topPages.find((page) =>
                       page.path.includes("/build-my-box")
                     );
-                    return formatNumber(buildMyBoxPage?.views || 0);
+                    const buildMyBoxVisitors = buildMyBoxPage?.views || 0;
+                    const conversionRate = analytics?.activeUsers
+                      ? (buildMyBoxVisitors / analytics.activeUsers) * 100
+                      : 0;
+                    return conversionRate.toFixed(1) + "%";
                   })()}
                 </span>
               </div>
@@ -354,7 +354,9 @@ const Dashboard = () => {
             <h3>Bounce Rate</h3>
           </div>
           <div className="stat-content">
-            <p className="stat-number">{analytics?.bounceRate?.toFixed(1)}%</p>
+            <p className="stat-number">
+              {analytics?.bounceRate?.toFixed(1)}%
+            </p>
             <div className="benchmark-data">
               <div className="benchmark-item">
                 <span className="benchmark-label">75th:</span>
