@@ -27,16 +27,23 @@ dotenv.config({ path: join(__dirname, ".env") });
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Initialize Supabase client
+// Initialize Supabase clients
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error("Missing Supabase configuration. Please check your .env file.");
   process.exit(1);
 }
 
+// Main client with service key for admin operations
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+// Read-only client with anon key for public data
+const supabasePublic = supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : supabase;
 
 // Initialize MongoDB client
 const mongoUri = process.env.MONGODB_URI;
@@ -790,8 +797,8 @@ app.post("/api/customers/:customerId/available-snacks", async (req, res) => {
 
     console.log(`  Customer has tried ${triedSnackIDs.size} unique snacks`);
 
-    // Get available snacks from Supabase inventory
-    const { data: inventory, error } = await supabase
+    // Get available snacks from Supabase inventory using public client
+    const { data: inventory, error } = await supabasePublic
       .from("fs_unassigned_inventory")
       .select("sku");
 
